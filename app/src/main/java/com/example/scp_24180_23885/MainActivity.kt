@@ -20,9 +20,11 @@ import androidx.core.content.ContextCompat
 import java.io.File
 import java.util.concurrent.Executors
 import android.Manifest
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Build
 import android.util.Size
+import android.widget.CheckBox
 import android.widget.TextView
 import androidx.camera.core.ForwardingImageProxy
 import androidx.camera.core.ImageAnalysis
@@ -30,21 +32,20 @@ import androidx.camera.core.ImageProxy
 import androidx.camera.view.PreviewView
 
 class MainActivity : AppCompatActivity() {
-    lateinit var button:Button
+    //lateinit var button:Button
     lateinit var imageView:ImageView
     lateinit var colorView: TextView
+    lateinit var checkBox: CheckBox
     private lateinit var cameraView: PreviewView
     private lateinit var imageCapture: ImageCapture
-
-
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        button = findViewById<Button>(R.id.button)
         colorView = findViewById<TextView>(R.id.textView2)
         //imageView = findViewById<ImageView>(R.id.imageView)
         cameraView = findViewById(R.id.cameraView)
+        checkBox = findViewById(R.id.checkBox)
 
         if (allPermissionsGranted()) {
             startCamera()
@@ -52,9 +53,9 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
 
-        button.setOnClickListener{
-            capturePhoto()
-        }
+        //button.setOnClickListener{
+         //   capturePhoto()
+       // }
     }
 
 
@@ -134,6 +135,8 @@ class MainActivity : AppCompatActivity() {
 
         runOnUiThread{
             colorView.text = hex
+            val parsedColor = Color.parseColor(hex)
+            checkBox.setBackgroundColor(parsedColor)
         }
     }
 
