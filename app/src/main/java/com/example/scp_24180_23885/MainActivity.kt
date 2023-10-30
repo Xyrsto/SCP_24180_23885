@@ -23,6 +23,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Build
+import android.os.Handler
 import android.util.Size
 import android.widget.CheckBox
 import android.widget.TextView
@@ -130,14 +131,17 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    private fun updateColorView(color: Int){
+    private fun updateColorView(color: Int) {
         val hex = String.format("#%06X", 0xFFFFFF and color)
 
-        runOnUiThread{
-            colorView.text = hex
-            val parsedColor = Color.parseColor(hex)
-            checkBox.setBackgroundColor(parsedColor)
-        }
+        val handler = Handler()
+        handler.postDelayed({
+            runOnUiThread {
+                colorView.text = hex
+                val parsedColor = Color.parseColor(hex)
+                checkBox.setBackgroundColor(parsedColor)
+            }
+        }, 2000) // 1500 milliseconds (1.5 seconds)
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
