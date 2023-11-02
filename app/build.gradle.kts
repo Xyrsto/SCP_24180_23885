@@ -33,6 +33,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -46,6 +49,7 @@ dependencies {
     implementation("androidx.core:core-ktx:+")
     implementation("androidx.core:core-ktx:+")
     implementation("androidx.core:core-ktx:+")
+    implementation("androidx.annotation:annotation:1.6.0")
     testImplementation("junit:junit:4.13.2")
     implementation("androidx.camera:camera-core:1.2.3")
     implementation("androidx.camera:camera-lifecycle:1.2.3")

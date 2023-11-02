@@ -21,12 +21,14 @@ import java.io.File
 import java.util.concurrent.Executors
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Build
 import android.os.Handler
 import android.util.Size
 import android.widget.CheckBox
 import android.widget.TextView
+import android.widget.Toast
 import androidx.camera.core.ForwardingImageProxy
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
@@ -37,16 +39,23 @@ class MainActivity : AppCompatActivity() {
     lateinit var imageView:ImageView
     lateinit var colorView: TextView
     lateinit var checkBox: CheckBox
+    lateinit var storeColorButton: Button
     private lateinit var cameraView: PreviewView
     private lateinit var imageCapture: ImageCapture
+    private lateinit var storedColor: String
+    private lateinit var loginLabel : TextView
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         colorView = findViewById<TextView>(R.id.textView2)
-        //imageView = findViewById<ImageView>(R.id.imageView)
         cameraView = findViewById(R.id.cameraView)
         checkBox = findViewById(R.id.checkBox)
+        storeColorButton = findViewById(R.id.button)
+        loginLabel = findViewById(R.id.loginLabel)
+
+        //bloqueia a orientação, para ficar sempre na vertical
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
 
         if (allPermissionsGranted()) {
             startCamera()
@@ -54,9 +63,14 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
 
-        //button.setOnClickListener{
-         //   capturePhoto()
-       // }
+        storeColorButton.setOnClickListener{
+            captureColor()
+        }
+
+        loginLabel.setOnClickListener(){
+            val intent = Intent(this@MainActivity, LoginActivity::class.java)
+            startActivity(intent)
+        }
     }
 
 
@@ -160,36 +174,15 @@ class MainActivity : AppCompatActivity() {
             mediaDir else filesDir
     }
 
-    fun capturePhoto(){
-        val outputDirectory = getOutputDirectory()
-        val file = File(outputDirectory, "${System.currentTimeMillis()}.jpg")
-
-        val metadata = ImageCapture.Metadata().apply {
-            // Add metadata here if desired
-        }
-
-        val outputFileOptions = ImageCapture.OutputFileOptions.Builder(file)
-            .setMetadata(metadata)
-            .build()
-
-        imageCapture.takePicture(outputFileOptions, Executors.newSingleThreadExecutor(),
-            object : ImageCapture.OnImageSavedCallback {
-                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    // Handle image capture success
-                    val savedUri = Uri.fromFile(file)
-                    imageView.setImageURI(savedUri)
-                }
-
-                override fun onError(exception: ImageCaptureException) {
-                    // Handle image capture error
-                }
-            })
+    private fun captureColor(){
+        storedColor = colorView.text.toString()
+        Toast.makeText(this, storedColor + " guardado com sucesso!", Toast.LENGTH_SHORT).show()
     }
 
     var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
         result -> if(result.resultCode == Activity.RESULT_OK){
-        val data: Intent? = result.data
-        imageView.setImageBitmap(data?.extras?.get("data") as Bitmap)
-    }
+            val data: Intent? = result.data
+            imageView.setImageBitmap(data?.extras?.get("data") as Bitmap)
+        }
     }
 }
