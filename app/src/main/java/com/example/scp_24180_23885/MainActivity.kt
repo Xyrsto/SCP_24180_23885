@@ -25,6 +25,7 @@ import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Build
 import android.os.Handler
+import android.util.Log
 import android.util.Size
 import android.widget.CheckBox
 import android.widget.TextView
@@ -33,6 +34,14 @@ import androidx.camera.core.ForwardingImageProxy
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.view.PreviewView
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import com.example.scp_24180_23885.retrofitInterface
+import com.google.gson.JsonObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
 
 class MainActivity : AppCompatActivity() {
     //lateinit var button:Button
@@ -176,7 +185,42 @@ class MainActivity : AppCompatActivity() {
 
     private fun captureColor(){
         storedColor = colorView.text.toString()
-        Toast.makeText(this, storedColor + " guardado com sucesso!", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(this, storedColor + " guardado com sucesso!", Toast.LENGTH_SHORT).show()
+
+        val api = Retrofit.Builder()
+            .baseUrl("https://teste-final-production.up.railway.app/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(retrofitInterface::class.java)
+
+        val body = JsonObject().apply {
+            addProperty("name", "nome fixe")
+            addProperty("description", "é a cor " + storedColor)
+            addProperty("color", storedColor)
+        }
+
+        api.addColor(body).enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    Log.e("0000", "success: ${response.body()}")
+                    // Handle success - response.body() contains the successful response body
+                    runOnUiThread {
+                        Toast.makeText(applicationContext, "Color added successfully!", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Log.e("0000", "failed: ${response.message()}")
+                    // Handle failure - response.message() contains the error message
+                    runOnUiThread {
+                        Toast.makeText(applicationContext, "Color adding failed!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                Log.e("0000", "error: ${t.message}")
+                // Handle failure - t.message contains the failure message
+            }
+        })
     }
 
     var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
