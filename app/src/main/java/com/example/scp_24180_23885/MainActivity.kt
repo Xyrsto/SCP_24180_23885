@@ -27,7 +27,9 @@ import android.os.Build
 import android.os.Handler
 import android.util.Log
 import android.util.Size
+import android.view.View
 import android.widget.CheckBox
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.camera.core.ForwardingImageProxy
@@ -53,6 +55,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var imageCapture: ImageCapture
     private lateinit var storedColor: String
     private lateinit var loginLabel : TextView
+    private lateinit var colorNameInput : EditText
+    private lateinit var currentLoggedUser : String
+    private lateinit var currentLoggedUserId : String
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +68,24 @@ class MainActivity : AppCompatActivity() {
         checkBox = findViewById(R.id.checkBox)
         storeColorButton = findViewById(R.id.button)
         loginLabel = findViewById(R.id.loginLabel)
+        colorNameInput = findViewById(R.id.colorName)
+
+        currentLoggedUser = intent.getStringExtra("loggedUser").toString()
+        if(currentLoggedUser !== "null"){
+            storeColorButton.isEnabled = true;
+            storeColorButton.visibility = View.VISIBLE;
+
+            colorNameInput.isEnabled = true;
+            colorNameInput.visibility = View.VISIBLE;
+            loginLabel.setText(currentLoggedUser)
+             getUserId();
+        }else{
+            storeColorButton.isEnabled = false;
+            storeColorButton.visibility = View.INVISIBLE
+            colorNameInput.isEnabled = false;
+            colorNameInput.visibility = View.INVISIBLE
+        }
+
 
         //bloqueia a orientação, para ficar sempre na vertical
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
@@ -187,6 +211,11 @@ class MainActivity : AppCompatActivity() {
         storedColor = colorView.text.toString()
         //Toast.makeText(this, storedColor + " guardado com sucesso!", Toast.LENGTH_SHORT).show()
 
+        if(colorNameInput.text.toString() == "")
+        {
+            Toast.makeText(this, "É necessário um nome para a cor", Toast.LENGTH_SHORT).show()
+
+        }
         val api = Retrofit.Builder()
             .baseUrl("https://teste-final-production.up.railway.app/")
             .addConverterFactory(GsonConverterFactory.create())
@@ -194,9 +223,10 @@ class MainActivity : AppCompatActivity() {
             .create(retrofitInterface::class.java)
 
         val body = JsonObject().apply {
-            addProperty("name", "nome fixe")
+            addProperty("name", colorNameInput.text.toString())
             addProperty("description", "é a cor " + storedColor)
             addProperty("color", storedColor)
+            addProperty("owner", currentLoggedUserId)
         }
 
         api.addColor(body).enqueue(object : Callback<JsonObject> {
@@ -205,13 +235,13 @@ class MainActivity : AppCompatActivity() {
                     Log.e("0000", "success: ${response.body()}")
                     // Handle success - response.body() contains the successful response body
                     runOnUiThread {
-                        Toast.makeText(applicationContext, "Color added successfully!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(applicationContext, "Cor("+colorNameInput.text.toString()+") adicionada com sucesso!", Toast.LENGTH_SHORT).show()
                     }
                 } else {
                     Log.e("0000", "failed: ${response.message()}")
                     // Handle failure - response.message() contains the error message
                     runOnUiThread {
-                        Toast.makeText(applicationContext, "Color adding failed!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(applicationContext, "Falha ao adicionar cor", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -228,5 +258,37 @@ class MainActivity : AppCompatActivity() {
             val data: Intent? = result.data
             imageView.setImageBitmap(data?.extras?.get("data") as Bitmap)
         }
+    }
+
+    fun getUserId(){
+        val api = Retrofit.Builder()
+            .baseUrl("https://teste-final-production.up.railway.app/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(retrofitInterface::class.java)
+
+        val body = JsonObject().apply {
+            addProperty("username", currentLoggedUser)
+        }
+
+        api.getId(body).enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val jsonObject = response.body()
+
+                    jsonObject?.let{
+                        val id = it.getAsJsonPrimitive("id").asString
+                        currentLoggedUserId = id;
+                    }
+                } else {
+                    // Handle failure - response.message() contains the error message
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                Log.e("0000", "error: ${t.message}")
+                // Handle failure - t.message contains the failure message
+            }
+        })
     }
 }

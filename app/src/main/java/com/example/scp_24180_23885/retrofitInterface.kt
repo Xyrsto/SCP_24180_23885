@@ -14,8 +14,18 @@ import retrofit2.http.POST
 interface retrofitInterface {
     @GET("/getColor")
     fun getColor(): Call<List<Cor>>
-    // Define other API endpoints here
+
+    @POST("/getId")
+    fun getId(@Body requestBody: JsonObject): Call<JsonObject>
+
 
     @POST("/addColor")
     fun addColor(@Body requestBody: JsonObject): Call<JsonObject>
+
+    @POST("/login")
+    fun login(@Body requestBody: JsonObject): Call<JsonObject>
+
+    @POST("/addUser")
+    fun addUser(@Body requestBody: JsonObject): Call<JsonObject>
+
 }
