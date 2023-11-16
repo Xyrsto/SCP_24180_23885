@@ -40,6 +40,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import com.example.scp_24180_23885.retrofitInterface
 import com.google.gson.JsonObject
+import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -55,6 +56,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var imageCapture: ImageCapture
     private lateinit var storedColor: String
     private lateinit var loginLabel : TextView
+    private lateinit var listarLabel : TextView
     private lateinit var colorNameInput : EditText
     private lateinit var currentLoggedUser : String
     private lateinit var currentLoggedUserId : String
@@ -68,6 +70,7 @@ class MainActivity : AppCompatActivity() {
         checkBox = findViewById(R.id.checkBox)
         storeColorButton = findViewById(R.id.button)
         loginLabel = findViewById(R.id.loginLabel)
+        listarLabel = findViewById(R.id.listarLabel)
         colorNameInput = findViewById(R.id.colorName)
 
         currentLoggedUser = intent.getStringExtra("loggedUser").toString()
@@ -77,6 +80,10 @@ class MainActivity : AppCompatActivity() {
 
             colorNameInput.isEnabled = true;
             colorNameInput.visibility = View.VISIBLE;
+
+            listarLabel.isEnabled = true;
+            listarLabel.visibility = View.VISIBLE
+
             loginLabel.setText(currentLoggedUser)
              getUserId();
         }else{
@@ -84,6 +91,8 @@ class MainActivity : AppCompatActivity() {
             storeColorButton.visibility = View.INVISIBLE
             colorNameInput.isEnabled = false;
             colorNameInput.visibility = View.INVISIBLE
+            listarLabel.isEnabled = false;
+            listarLabel.visibility = View.INVISIBLE
         }
 
 
@@ -102,6 +111,12 @@ class MainActivity : AppCompatActivity() {
 
         loginLabel.setOnClickListener(){
             val intent = Intent(this@MainActivity, LoginActivity::class.java)
+            startActivity(intent)
+        }
+
+        listarLabel.setOnClickListener(){
+            val intent = Intent(this@MainActivity, ListActivity::class.java)
+            intent.putExtra("userId", currentLoggedUserId)
             startActivity(intent)
         }
     }

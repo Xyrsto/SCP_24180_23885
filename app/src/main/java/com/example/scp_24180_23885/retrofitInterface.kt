@@ -4,6 +4,7 @@ import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 import com.example.scp_24180_23885.Cor
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import retrofit2.Response
 import retrofit2.http.Body
@@ -27,5 +28,8 @@ interface retrofitInterface {
 
     @POST("/addUser")
     fun addUser(@Body requestBody: JsonObject): Call<JsonObject>
+
+    @POST("/getUserColors")
+    fun getUserColors(@Body requestBody: JsonObject): Call<JsonArray>
 
 }
