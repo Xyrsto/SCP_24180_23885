@@ -117,6 +117,7 @@ class MainActivity : AppCompatActivity() {
         listarLabel.setOnClickListener(){
             val intent = Intent(this@MainActivity, ListActivity::class.java)
             intent.putExtra("userId", currentLoggedUserId)
+            intent.putExtra("userName", currentLoggedUser)
             startActivity(intent)
         }
     }

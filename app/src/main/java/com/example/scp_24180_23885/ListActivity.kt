@@ -23,6 +23,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class ListActivity: AppCompatActivity() {
     private lateinit var currentUserId : String
+    private lateinit var currentUser : String
     private lateinit var backLabel : TextView
     val colorItems = mutableListOf<ColorItem>() // Create a list of ColorItems
 
@@ -30,11 +31,15 @@ class ListActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list)
 
+        currentUserId = intent.getStringExtra("userId").toString()
+        currentUser = intent.getStringExtra("userName").toString()
+
+
         backLabel = findViewById(R.id.scpRegisterClickable)
 
         backLabel.setOnClickListener(){
             val intent = Intent(this@ListActivity, MainActivity::class.java)
-            intent.putExtra("loggedUser", currentUserId)
+            intent.putExtra("loggedUser", currentUser)
             startActivity(intent)
         }
 
