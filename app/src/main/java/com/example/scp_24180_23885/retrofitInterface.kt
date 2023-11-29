@@ -32,4 +32,9 @@ interface retrofitInterface {
     @POST("/getUserColors")
     fun getUserColors(@Body requestBody: JsonObject): Call<JsonArray>
 
+    @POST("/removeColor")
+    fun removeColor(@Body requestBody: JsonObject): Call<JsonObject>
+
+    @POST("updateColorName")
+    fun updateColorName(@Body requestBody: JsonObject): Call<JsonObject>
 }
