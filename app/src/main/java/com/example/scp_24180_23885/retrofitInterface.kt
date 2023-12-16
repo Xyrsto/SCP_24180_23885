@@ -13,12 +13,12 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 
 interface retrofitInterface {
+
     @GET("/getColor")
     fun getColor(): Call<List<Cor>>
 
     @POST("/getId")
     fun getId(@Body requestBody: JsonObject): Call<JsonObject>
-
 
     @POST("/addColor")
     fun addColor(@Body requestBody: JsonObject): Call<JsonObject>
@@ -35,6 +35,15 @@ interface retrofitInterface {
     @POST("/removeColor")
     fun removeColor(@Body requestBody: JsonObject): Call<JsonObject>
 
-    @POST("updateColorName")
+    @POST("/updateColorName")
     fun updateColorName(@Body requestBody: JsonObject): Call<JsonObject>
+
+    @POST("/updateUsername")
+    fun updateUsername(@Body requestBody: JsonObject): Call<JsonObject>
+
+    @POST("/updateEmail")
+    fun updateEmail(@Body requestBody: JsonObject): Call<JsonObject>
+
+    @POST("/updatePassword")
+    fun updatePassword(@Body requestBody: JsonObject): Call<JsonObject>
 }

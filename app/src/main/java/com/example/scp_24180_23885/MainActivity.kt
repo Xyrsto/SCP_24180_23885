@@ -48,18 +48,18 @@ import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
     //lateinit var button:Button
-    lateinit var imageView:ImageView
+    lateinit var imageView: ImageView
     lateinit var colorView: TextView
     lateinit var checkBox: CheckBox
     lateinit var storeColorButton: Button
     private lateinit var cameraView: PreviewView
     private lateinit var imageCapture: ImageCapture
     private lateinit var storedColor: String
-    private lateinit var loginLabel : TextView
-    private lateinit var listarLabel : TextView
-    private lateinit var colorNameInput : EditText
-    private lateinit var currentLoggedUser : String
-    private lateinit var currentLoggedUserId : String
+    private lateinit var loginLabel: TextView
+    private lateinit var listarLabel: TextView
+    private lateinit var colorNameInput: EditText
+    private lateinit var currentLoggedUser: String
+    private lateinit var currentLoggedUserId: String
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         colorNameInput = findViewById(R.id.colorName)
 
         currentLoggedUser = intent.getStringExtra("loggedUser").toString()
-        if(currentLoggedUser !== "null"){
+        if (currentLoggedUser !== "null") {
             storeColorButton.isEnabled = true;
             storeColorButton.visibility = View.VISIBLE;
 
@@ -85,8 +85,8 @@ class MainActivity : AppCompatActivity() {
             listarLabel.visibility = View.VISIBLE
 
             loginLabel.setText(currentLoggedUser)
-             getUserId();
-        }else{
+            getUserId();
+        } else {
             storeColorButton.isEnabled = false;
             storeColorButton.visibility = View.INVISIBLE
             colorNameInput.isEnabled = false;
@@ -105,16 +105,23 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
 
-        storeColorButton.setOnClickListener{
+        storeColorButton.setOnClickListener {
             captureColor()
         }
 
-        loginLabel.setOnClickListener(){
-            val intent = Intent(this@MainActivity, LoginActivity::class.java)
-            startActivity(intent)
+        loginLabel.setOnClickListener() {
+            if (currentLoggedUser === "null") {
+                val intent = Intent(this@MainActivity, LoginActivity::class.java)
+                startActivity(intent)
+            } else {
+                val intent = Intent(this@MainActivity, UserProfile::class.java)
+                intent.putExtra("userId", currentLoggedUserId)
+                intent.putExtra("userName", currentLoggedUser)
+                startActivity(intent)
+            }
         }
 
-        listarLabel.setOnClickListener(){
+        listarLabel.setOnClickListener() {
             val intent = Intent(this@MainActivity, ListActivity::class.java)
             intent.putExtra("userId", currentLoggedUserId)
             intent.putExtra("userName", currentLoggedUser)
@@ -135,12 +142,12 @@ class MainActivity : AppCompatActivity() {
                     it.setSurfaceProvider(cameraView.surfaceProvider)
                 }
 
-            val imageAnalysis = ImageAnalysis.Builder().setTargetResolution(Size(640,480)).build()
+            val imageAnalysis = ImageAnalysis.Builder().setTargetResolution(Size(640, 480)).build()
 
             imageAnalysis.setAnalyzer(Executors.newSingleThreadExecutor(), { imageProxy ->
                 val color = extractColorFromCenter(imageProxy)
 
-                runOnUiThread{
+                runOnUiThread {
                     updateColorView(color)
                 }
 
@@ -165,7 +172,7 @@ class MainActivity : AppCompatActivity() {
      *  @param imageProxy
      *  @return Devolve a cor estraída do centro da câmara
      */
-    private fun extractColorFromCenter(imageProxy: ImageProxy):Int{
+    private fun extractColorFromCenter(imageProxy: ImageProxy): Int {
         val width = imageProxy.width
         val height = imageProxy.height
         val centerX = width / 2
@@ -176,7 +183,8 @@ class MainActivity : AppCompatActivity() {
         val vBuffer = imageProxy.planes[2].buffer
 
         val yIndex = centerY * imageProxy.planes[0].rowStride + centerX
-        val uvIndex = (centerY / 2) * imageProxy.planes[1].rowStride + (centerX / 2) * imageProxy.planes[1].pixelStride
+        val uvIndex =
+            (centerY / 2) * imageProxy.planes[1].rowStride + (centerX / 2) * imageProxy.planes[1].pixelStride
 
         val y = yBuffer[yIndex].toInt() and 0xFF
         val u = uBuffer[uvIndex].toInt() and 0xFF
@@ -223,12 +231,11 @@ class MainActivity : AppCompatActivity() {
             mediaDir else filesDir
     }
 
-    private fun captureColor(){
+    private fun captureColor() {
         storedColor = colorView.text.toString()
         //Toast.makeText(this, storedColor + " guardado com sucesso!", Toast.LENGTH_SHORT).show()
 
-        if(colorNameInput.text.toString() == "")
-        {
+        if (colorNameInput.text.toString() == "") {
             Toast.makeText(this, "É necessário um nome para a cor", Toast.LENGTH_SHORT).show()
 
         }
@@ -251,13 +258,21 @@ class MainActivity : AppCompatActivity() {
                     Log.e("0000", "success: ${response.body()}")
                     // Handle success - response.body() contains the successful response body
                     runOnUiThread {
-                        Toast.makeText(applicationContext, "Cor("+colorNameInput.text.toString()+") adicionada com sucesso!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            applicationContext,
+                            "Cor(" + colorNameInput.text.toString() + ") adicionada com sucesso!",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 } else {
                     Log.e("0000", "failed: ${response.message()}")
                     // Handle failure - response.message() contains the error message
                     runOnUiThread {
-                        Toast.makeText(applicationContext, "Falha ao adicionar cor", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            applicationContext,
+                            "Falha ao adicionar cor",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
@@ -269,14 +284,15 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-        result -> if(result.resultCode == Activity.RESULT_OK){
-            val data: Intent? = result.data
-            imageView.setImageBitmap(data?.extras?.get("data") as Bitmap)
+    var resultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data: Intent? = result.data
+                imageView.setImageBitmap(data?.extras?.get("data") as Bitmap)
+            }
         }
-    }
 
-    fun getUserId(){
+    fun getUserId() {
         val api = Retrofit.Builder()
             .baseUrl("https://teste-final-production.up.railway.app/")
             .addConverterFactory(GsonConverterFactory.create())
@@ -292,7 +308,7 @@ class MainActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val jsonObject = response.body()
 
-                    jsonObject?.let{
+                    jsonObject?.let {
                         val id = it.getAsJsonPrimitive("id").asString
                         currentLoggedUserId = id;
                     }

@@ -16,10 +16,10 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class ListActivity: AppCompatActivity(), CustomAdapter.OnItemClickListener {
-    private lateinit var currentUserId : String
-    private lateinit var currentUser : String
-    private lateinit var backLabel : TextView
+class ListActivity : AppCompatActivity(), CustomAdapter.OnItemClickListener {
+    private lateinit var currentUserId: String
+    private lateinit var currentUser: String
+    private lateinit var backLabel: TextView
     private lateinit var adapter: CustomAdapter
     val colorItems = mutableListOf<ColorItem>() // Create a list of ColorItems
 
@@ -31,9 +31,8 @@ class ListActivity: AppCompatActivity(), CustomAdapter.OnItemClickListener {
         currentUserId = intent.getStringExtra("userId").toString()
         currentUser = intent.getStringExtra("userName").toString()
 
-
         backLabel = findViewById(R.id.scpRegisterClickable)
-        backLabel.setOnClickListener(){
+        backLabel.setOnClickListener() {
             val intent = Intent(this@ListActivity, MainActivity::class.java)
             intent.putExtra("loggedUser", currentUser)
             startActivity(intent)
@@ -44,10 +43,8 @@ class ListActivity: AppCompatActivity(), CustomAdapter.OnItemClickListener {
         adapter = CustomAdapter(this, colorItems, this)
         listView.adapter = adapter
 
-        val api = Retrofit.Builder()
-            .baseUrl("https://teste-final-production.up.railway.app/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        val api = Retrofit.Builder().baseUrl("https://teste-final-production.up.railway.app/")
+            .addConverterFactory(GsonConverterFactory.create()).build()
             .create(retrofitInterface::class.java)
 
         val body = JsonObject().apply {
@@ -81,6 +78,7 @@ class ListActivity: AppCompatActivity(), CustomAdapter.OnItemClickListener {
         })
 
     }
+
     override fun onRemoveButtonClick(colorItem: ColorItem) {
         removeColor(colorItem)
     }
@@ -90,10 +88,8 @@ class ListActivity: AppCompatActivity(), CustomAdapter.OnItemClickListener {
     }
 
     private fun updateColorName(colorItem: ColorItem, editedText: String) {
-        val api = Retrofit.Builder()
-            .baseUrl("https://teste-final-production.up.railway.app/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        val api = Retrofit.Builder().baseUrl("https://teste-final-production.up.railway.app/")
+            .addConverterFactory(GsonConverterFactory.create()).build()
             .create(retrofitInterface::class.java)
 
         val requestBody = JsonObject().apply {
@@ -109,7 +105,9 @@ class ListActivity: AppCompatActivity(), CustomAdapter.OnItemClickListener {
                     colorItem.name = editedText
                     // Notify the adapter that the dataset has changed
                     adapter.notifyDataSetChanged()
-                    Toast.makeText(applicationContext, "Atualizado com sucesso!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        applicationContext, "Atualizado com sucesso!", Toast.LENGTH_SHORT
+                    ).show()
                 } else {
                     Toast.makeText(applicationContext, "Erro", Toast.LENGTH_SHORT).show()
                 }
@@ -122,12 +120,9 @@ class ListActivity: AppCompatActivity(), CustomAdapter.OnItemClickListener {
     }
 
 
-
     private fun removeColor(colorItem: ColorItem) {
-        val api = Retrofit.Builder()
-            .baseUrl("https://teste-final-production.up.railway.app/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        val api = Retrofit.Builder().baseUrl("https://teste-final-production.up.railway.app/")
+            .addConverterFactory(GsonConverterFactory.create()).build()
             .create(retrofitInterface::class.java)
 
         val body = JsonObject().apply {
