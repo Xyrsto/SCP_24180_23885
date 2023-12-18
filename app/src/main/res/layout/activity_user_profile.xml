@@ -46,7 +46,6 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/toolbar2"
-        app:layout_constraintStart_toEndOf="@+id/scpRegisterClickable"
         app:layout_constraintTop_toTopOf="@+id/toolbar2" />
 
     <TextView
@@ -72,7 +71,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.113"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText4" />
+        app:layout_constraintTop_toBottomOf="@+id/editEmailTextview" />
 
     <TextView
         android:id="@+id/textView11"
@@ -84,10 +83,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.113"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText" />
+        app:layout_constraintTop_toBottomOf="@+id/editUsernameTextview" />
 
     <EditText
-        android:id="@+id/editTextText"
+        android:id="@+id/editUsernameTextview"
         android:layout_width="234dp"
         android:layout_height="45dp"
         android:layout_marginTop="80dp"
@@ -99,7 +98,7 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbar2" />
 
     <EditText
-        android:id="@+id/editTextText4"
+        android:id="@+id/editEmailTextview"
         android:layout_width="228dp"
         android:layout_height="45dp"
         android:layout_marginTop="20dp"
@@ -117,7 +116,7 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/button2"
+        app:layout_constraintBottom_toTopOf="@+id/logoutButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.191"
         app:layout_constraintStart_toStartOf="parent"
@@ -125,7 +124,7 @@
         app:layout_constraintVertical_bias="0.062" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/logoutButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="60dp"
@@ -137,7 +136,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/editPasswordButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#1B1B1B"
@@ -146,31 +145,31 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.516"
         app:layout_constraintStart_toEndOf="@+id/editTextTextPassword3"
-        app:layout_constraintTop_toBottomOf="@+id/button4"
+        app:layout_constraintTop_toBottomOf="@+id/editEmailButton"
         app:layout_constraintVertical_bias="1.0" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/editEmailButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#1B1B1B"
         android:text="Editar"
-        app:layout_constraintBottom_toBottomOf="@+id/editTextText4"
+        app:layout_constraintBottom_toBottomOf="@+id/editEmailTextview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.491"
-        app:layout_constraintStart_toEndOf="@+id/editTextText4"
-        app:layout_constraintTop_toBottomOf="@+id/button5"
+        app:layout_constraintStart_toEndOf="@+id/editEmailTextview"
+        app:layout_constraintTop_toBottomOf="@+id/editUsernameButton"
         app:layout_constraintVertical_bias="1.0" />
 
     <Button
-        android:id="@+id/button5"
+        android:id="@+id/editUsernameButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#1B1B1B"
         android:text="Editar"
-        app:layout_constraintBottom_toBottomOf="@+id/editTextText"
+        app:layout_constraintBottom_toBottomOf="@+id/editUsernameTextview"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/editTextText"
+        app:layout_constraintStart_toEndOf="@+id/editUsernameTextview"
         app:layout_constraintTop_toBottomOf="@+id/toolbar2"
         app:layout_constraintVertical_bias="1.0" />
 
