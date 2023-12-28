@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var storedColor: String
     private lateinit var loginLabel: TextView
     private lateinit var listarLabel: TextView
+    private lateinit var scpLabel: TextView
     private lateinit var colorNameInput: EditText
     private lateinit var currentLoggedUser: String
     private lateinit var currentLoggedUserId: String
@@ -72,6 +73,7 @@ class MainActivity : AppCompatActivity() {
         loginLabel = findViewById(R.id.loginLabel)
         listarLabel = findViewById(R.id.listarLabel)
         colorNameInput = findViewById(R.id.colorName)
+        scpLabel = findViewById(R.id.scpLabel)
 
         currentLoggedUser = intent.getStringExtra("loggedUser").toString()
         if (currentLoggedUser !== "null") {
@@ -125,6 +127,11 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this@MainActivity, ListActivity::class.java)
             intent.putExtra("userId", currentLoggedUserId)
             intent.putExtra("userName", currentLoggedUser)
+            startActivity(intent)
+        }
+
+        scpLabel.setOnClickListener(){
+            val intent = Intent(this@MainActivity, InfoActivity::class.java)
             startActivity(intent)
         }
     }
