@@ -45,7 +45,7 @@
                     android:id="@+id/editTextArea"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter text"/>
+                    android:hint="Novo nome..." />
 
                 <!-- Buttons in a horizontal LinearLayout -->
                 <LinearLayout
@@ -60,7 +60,7 @@
                         android:layout_marginTop="8dp"
                         android:layout_weight="1"
                         android:backgroundTint="@color/toolBarColor"
-                        android:text="Edit" />
+                        android:text="Editar" />
 
                     <Button
                         android:id="@+id/removeButton"
@@ -69,7 +69,7 @@
                         android:layout_marginTop="8dp"
                         android:layout_weight="1"
                         android:backgroundTint="@color/toolBarColor"
-                        android:text="Remove" />
+                        android:text="Remover" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
