@@ -20,7 +20,25 @@ private lateinit var mainScreenLabel: TextView
 private lateinit var emailRegister: EditText
 private lateinit var usernameRegister: EditText
 private lateinit var passwordRegister: EditText
+
+/**
+ * Classe que representa a atividade de registo de utilizador.
+ *
+ * Esta atividade permite que um novo utilizador se registe fornecendo as informações necessárias.
+ *
+ * @property registerButton Elemento de interface do tipo Button associado ao botão de registo.
+ * @property mainScreenLabel Elemento de interface do tipo TextView associado à label "scpRegisterClickable".
+ * @property emailRegister Elemento de interface do tipo EditText associado ao campo de email.
+ * @property usernameRegister Elemento de interface do tipo EditText associado ao campo de nome de utilizador.
+ * @property passwordRegister Elemento de interface do tipo EditText associado ao campo de senha.
+ */
 class RegisterActivity : AppCompatActivity() {
+
+    /**
+     * Método chamado quando a atividade é criada.
+     *
+     * @param savedInstanceState Dados fornecidos se a atividade está sendo recriada a partir de um estado anterior.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
@@ -41,6 +59,9 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Método responsável por realizar a operação de registo de utilizador.
+     */
     fun register(){
         val api = Retrofit.Builder()
             .baseUrl("https://teste-final-production.up.railway.app/")

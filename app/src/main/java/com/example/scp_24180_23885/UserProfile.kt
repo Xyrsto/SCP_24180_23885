@@ -15,6 +15,10 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+/**
+ * Classe que representa a atividade do perfil do utilizador.
+ * Permite a visualização e edição das informações do utilizador.
+ */
 class UserProfile : AppCompatActivity() {
     private lateinit var listarLabel: TextView
     private lateinit var backlabel: TextView

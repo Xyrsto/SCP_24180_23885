@@ -16,6 +16,17 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+/**
+ * Classe que representa a atividade de listagem de cores.
+ *
+ * Esta atividade exibe uma lista de cores associadas a um usuário e permite remoção e edição.
+ *
+ * @property currentUserId Identificador do usuário corrente.
+ * @property currentUser Nome do usuário corrente.
+ * @property backLabel Elemento de interface do tipo TextView associado à label "scpRegisterClickable".
+ * @property adapter Adaptador personalizado para a lista de cores.
+ * @property colorItems Lista de itens de cores associadas ao usuário.
+ */
 class ListActivity : AppCompatActivity(), CustomAdapter.OnItemClickListener {
     private lateinit var currentUserId: String
     private lateinit var currentUser: String
@@ -23,6 +34,11 @@ class ListActivity : AppCompatActivity(), CustomAdapter.OnItemClickListener {
     private lateinit var adapter: CustomAdapter
     val colorItems = mutableListOf<ColorItem>() // Create a list of ColorItems
 
+    /**
+     * Método chamado quando a atividade é criada.
+     *
+     * @param savedInstanceState Dados fornecidos se a atividade está sendo recriada a partir de um estado anterior.
+     */
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,14 +95,31 @@ class ListActivity : AppCompatActivity(), CustomAdapter.OnItemClickListener {
 
     }
 
+    /**
+     * Método chamado quando o botão de remoção é clicado.
+     *
+     * @param colorItem Item de cor associado ao botão de remoção clicado.
+     */
     override fun onRemoveButtonClick(colorItem: ColorItem) {
         removeColor(colorItem)
     }
 
+    /**
+     * Método chamado quando o botão de edição é clicado.
+     *
+     * @param colorItem Item de cor associado ao botão de edição clicado.
+     * @param editedText Texto editado a ser atualizado.
+     */
     override fun onEditButtonClick(colorItem: ColorItem, editedText: String) {
         updateColorName(colorItem, editedText)
     }
 
+    /**
+     * Método para atualizar o nome de uma cor.
+     *
+     * @param colorItem Item de cor a ser atualizado.
+     * @param editedText Novo texto editado.
+     */
     private fun updateColorName(colorItem: ColorItem, editedText: String) {
         val api = Retrofit.Builder().baseUrl("https://teste-final-production.up.railway.app/")
             .addConverterFactory(GsonConverterFactory.create()).build()
@@ -119,7 +152,11 @@ class ListActivity : AppCompatActivity(), CustomAdapter.OnItemClickListener {
         })
     }
 
-
+    /**
+     * Método para remover uma cor.
+     *
+     * @param colorItem Item de cor a ser removido.
+     */
     private fun removeColor(colorItem: ColorItem) {
         val api = Retrofit.Builder().baseUrl("https://teste-final-production.up.railway.app/")
             .addConverterFactory(GsonConverterFactory.create()).build()

@@ -45,10 +45,26 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
+/**
+ * Classe principal da aplicação (MainActivity).
+ *
+ * Esta classe é responsável pela lógica principal da aplicação SCP, incluindo a captura de cores
+ * pela câmara, o armazenamento de cores e a navegação entre diferentes atividades.
+ *
+ * @property colorView Componente de exibição para a representação hexadecimal da cor capturada.
+ * @property checkBox Caixa de seleção para exibir a cor capturada.
+ * @property storeColorButton Botão para capturar e armazenar a cor.
+ * @property cameraView Componente para visualização da câmara.
+ * @property imageCapture Objeto responsável pela captura de imagens.
+ * @property storedColor Cor capturada e armazenada.
+ * @property loginLabel Rótulo para exibir o nome do utilizador logado.
+ * @property listarLabel Rótulo para navegar até a atividade de listagem.
+ * @property scpLabel Rótulo para navegar até a atividade de informações.
+ * @property colorNameInput Entrada de texto para o nome da cor.
+ * @property currentLoggedUser Nome do utilizador atualmente logado.
+ * @property currentLoggedUserId ID do utilizador atualmente logado.
+ */
 class MainActivity : AppCompatActivity() {
-    //lateinit var button:Button
-    lateinit var imageView: ImageView
     lateinit var colorView: TextView
     lateinit var checkBox: CheckBox
     lateinit var storeColorButton: Button
@@ -130,13 +146,20 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        scpLabel.setOnClickListener(){
+        scpLabel.setOnClickListener() {
             val intent = Intent(this@MainActivity, InfoActivity::class.java)
+            intent.putExtra("userId", currentLoggedUserId)
+            intent.putExtra("userName", currentLoggedUser)
             startActivity(intent)
         }
     }
 
-
+    /**
+     * Inicializa e configura a câmara para captura de cor.
+     *
+     * Este método utiliza o [ProcessCameraProvider] para configurar a câmara, definir um
+     * [Preview] e um [ImageAnalysis] para análise da cor capturada.
+     */
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
@@ -170,14 +193,17 @@ class MainActivity : AppCompatActivity() {
                 cameraProvider.unbindAll()
                 cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalysis)
             } catch (exc: Exception) {
-                // Handle any exceptions
             }
         }, ContextCompat.getMainExecutor(this))
     }
 
     /**
-     *  @param imageProxy
-     *  @return Devolve a cor estraída do centro da câmara
+     * Extrai a cor do centro da imagem capturada.
+     *
+     * Este método realiza a conversão da representação YUV para RGB e retorna a cor resultante.
+     *
+     * @param imageProxy Objeto [ImageProxy] contendo a imagem capturada.
+     * @return A cor RGB extraída do centro da imagem.
      */
     private fun extractColorFromCenter(imageProxy: ImageProxy): Int {
         val width = imageProxy.width
@@ -209,6 +235,14 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+    /**
+     * Atualiza a visualização da cor capturada na interface do utilizador.
+     *
+     * Este método converte a cor para representação hexadecimal, exibe-a em um [TextView]
+     * e define a cor de fundo de uma [CheckBox].
+     *
+     * @param color A cor a ser exibida.
+     */
     private fun updateColorView(color: Int) {
         val hex = String.format("#%06X", 0xFFFFFF and color)
 
@@ -219,9 +253,14 @@ class MainActivity : AppCompatActivity() {
                 val parsedColor = Color.parseColor(hex)
                 checkBox.setBackgroundColor(parsedColor)
             }
-        }, 2000) // 1500 milliseconds (1.5 seconds)
+        }, 2000)
     }
 
+    /**
+     * Verifica se todas as permissões necessárias foram concedidas.
+     *
+     * @return `true` se todas as permissões foram concedidas, `false` caso contrário.
+     */
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
     }
@@ -229,18 +268,13 @@ class MainActivity : AppCompatActivity() {
     private val REQUEST_CODE_PERMISSIONS = 10
     private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
 
-    // Create a directory to store captured images
-    private fun getOutputDirectory(): File {
-        val mediaDir = externalMediaDirs.firstOrNull()?.let {
-            File(it, resources.getString(R.string.app_name)).apply { mkdirs() }
-        }
-        return if (mediaDir != null && mediaDir.exists())
-            mediaDir else filesDir
-    }
-
+    /**
+     * Captura a cor atualmente exibida e a armazena no servidor.
+     *
+     * Este método utiliza a Retrofit para realizar uma chamada à API e armazenar a cor capturada.
+     */
     private fun captureColor() {
         storedColor = colorView.text.toString()
-        //Toast.makeText(this, storedColor + " guardado com sucesso!", Toast.LENGTH_SHORT).show()
 
         if (colorNameInput.text.toString() == "") {
             Toast.makeText(this, "É necessário um nome para a cor", Toast.LENGTH_SHORT).show()
@@ -263,7 +297,6 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     Log.e("0000", "success: ${response.body()}")
-                    // Handle success - response.body() contains the successful response body
                     runOnUiThread {
                         Toast.makeText(
                             applicationContext,
@@ -286,19 +319,16 @@ class MainActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 Log.e("0000", "error: ${t.message}")
-                // Handle failure - t.message contains the failure message
             }
         })
     }
 
-    var resultLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data: Intent? = result.data
-                imageView.setImageBitmap(data?.extras?.get("data") as Bitmap)
-            }
-        }
-
+    /**
+     * Obtém o ID do utilizador atualmente logado.
+     *
+     * Este método utiliza a Retrofit para realizar uma chamada à API e obter o ID do utilizador
+     * com base no nome do utilizador atualmente logado.
+     */
     fun getUserId() {
         val api = Retrofit.Builder()
             .baseUrl("https://teste-final-production.up.railway.app/")
@@ -319,14 +349,11 @@ class MainActivity : AppCompatActivity() {
                         val id = it.getAsJsonPrimitive("id").asString
                         currentLoggedUserId = id;
                     }
-                } else {
-                    // Handle failure - response.message() contains the error message
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 Log.e("0000", "error: ${t.message}")
-                // Handle failure - t.message contains the failure message
             }
         })
     }

@@ -22,7 +22,24 @@ private lateinit var mainScreenLabel: TextView
 private lateinit var usernameLoginField: EditText
 private lateinit var passwordLoginField: EditText
 
+/**
+ * Classe que representa a atividade de login.
+ *
+ * Esta atividade permite que o usuário faça login na aplicação fornecendo suas credenciais.
+ *
+ * @property registerLabel Elemento de interface do tipo TextView associado à label "registerLabel".
+ * @property loginButton Elemento de interface do tipo Button associado ao botão de login.
+ * @property mainScreenLabel Elemento de interface do tipo TextView associado à label "scpRegisterClickable".
+ * @property usernameLoginField Elemento de interface do tipo EditText associado ao campo de nome de usuário.
+ * @property passwordLoginField Elemento de interface do tipo EditText associado ao campo de senha.
+ */
 class LoginActivity : AppCompatActivity() {
+
+    /**
+     * Método chamado quando a atividade é criada.
+     *
+     * @param savedInstanceState Dados fornecidos se a atividade está sendo recriada a partir de um estado anterior.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -49,7 +66,9 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    //TODO -> Código relacionado ao login na API(acho que é com retrofit)
+    /**
+     * Método responsável por realizar a operação de login.
+     */
     private fun login(){
         var username = usernameLoginField.text;
         var password = passwordLoginField.text;
